@@ -14,8 +14,8 @@ jQuery(document).ready(function($) {
 			data:{
 				'action' : 'getBalances',
 				'data' : $( '#email' ).val(),
-				'submission' : 'true',
-				//'nonce' : $( '#wcsf-nonce' ).val(),
+				'submission' : $( '.search-submitted' ).val(),
+				'nonce' : $( '#search_email' ).val(),
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
                 //alert('An error occurred... Look at the console (F12 or Ctrl+Shift+I, Console tab) for more information!');
@@ -28,7 +28,8 @@ jQuery(document).ready(function($) {
             },
 			complete: function( object ) {
 				//$( '.entry-content' ).text( object.responseJSON.body );
-				console.log(object.responseJSON.body)
+				console.log(object)
+				console.log(object.responseJSON)
 				console.log("complete function");
 				console.log($('#email').val());
 			}
