@@ -11,15 +11,13 @@
  * @since presscore 1.0
  */
 
-require_once 'ChromePhp.php';
-
 // File Security Check
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 $config = Presscore_Config::get_instance();
 $config->set('template', 'page');
 
-apply_filters('initialize_page', 'cool');
+//apply_filters('initialize_page', 'cool');
 
 get_header();
 ?>

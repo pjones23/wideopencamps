@@ -30,18 +30,25 @@ require( trailingslashit( get_template_directory() ) . 'inc/init.php' );
 //ChromePhp::log(get_the_ID());
 
 // ---------------------------------
-add_filter('initialize_page', function($arg){
-    if(is_page(1657)){
+//add_filter('initialize_page', function($arg){
+    //if(is_page(1657)){
 		ChromePhp::log("checking balances");
 		initializeExample();
-		if(has_action('wp_ajax_nopriv_wcsf_ajax')) {
+		if(has_action('wp_ajax_getBalances')) {
 			// action exists so execute it
-			ChromePhp::log("Action exists");
+			ChromePhp::log("Admin Action exists");
 		} else {
 			// action has not been registered
-			ChromePhp::log("Action does not exists");
+			ChromePhp::log("Admin Action does not exists");
 		}
-	} else {
-		ChromePhp::log("doing other things");
-	}
-});
+		if(has_action('wp_ajax_nopriv_getBalances')) {
+			// action exists so execute it
+			ChromePhp::log("Public Action exists");
+		} else {
+			// action has not been registered
+			ChromePhp::log("Public Action does not exists");
+		}
+	//} else {
+		//ChromePhp::log("doing other things");
+	//}
+//});
