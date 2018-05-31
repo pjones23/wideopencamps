@@ -51,6 +51,7 @@ function getBalances() {
 		global $campFormHashes;
 		global $balanceFormHashes;
 		$entries = getEntries($campFormHashes);
+		getRegistrationsFromEntries($entries);
 		//$balanceEntries = getEntries($balanceFormHashes);
 
 		//ChromePhp::log(print_r($entries));
@@ -96,30 +97,109 @@ $balanceFormHashes = array(
 	)
 );
 
+/*
+ChromePhp::log($email);
+ChromePhp::log($firstCamperFirstName);
+ChromePhp::log($firstCamperLastName);
+ChromePhp::log($firstCamperSelectedCamps);
+ChromePhp::log($firstCamperCamperTypes);
+ChromePhp::log($secondCamperFirstName);
+ChromePhp::log($secondCamperLastName);
+ChromePhp::log($secondCamperSelectedCamps);
+ChromePhp::log($secondCamperCamperTypes);
+*/
+
+$entryMaps = array(
+	array(
+		'hash' => 'pmxpg7a0mnbsnb', // 2018-camper-application-medical-form-deposit
+		'email' => 'Field200', // email field
+		'athleteCount' => 'Field212', // # of campers
+		'firstCamperFirstName' => 'Field1', // first camper first name
+		'firstCamperLastName' => 'Field2', // first camper last name
+		'firstCamperCampOne' => 'Field99', // Mid July Alabama (July 9 - 13) (empty if not selected)
+		'firstCamperCampTwo' => 'Field100', // Late July Alabama (July 23 - 27) (empty if not selected)
+		'firstCamperCampOneType' => 'Field30', // Mid July Alabama Type of Camper (empty if not selected)
+		'firstCamperCampTwoType' => 'Field210', // Late July Alabama Type of Camper (empty if not selected)
+		'secondCamperFirstName' => 'Field13', // second camper first name
+		'secondCamperLastName' => 'Field14', // second camper last name
+		'secondCamperCampOne' => 'Field224', // Mid July Alabama (July 9 - 13) (empty if not selected)
+		'secondCamperCampTwo' => 'Field225', // Late July Alabama (July 23 - 27) (empty if not selected)
+		'secondCamperCampOneType' => 'Field324', // Mid July Alabama Type of Camper (empty if not selected)
+		'secondCamperCampTwoType' => 'Field325' // Late July Alabama Type of Camper (empty if not selected)
+	),
+	array(
+		'hash' => 's1h1wpu1e3p7m2', // 2018-camper-application-medical-form-full-pay
+		'email' => 'Field200', // email field
+		'athleteCount' => 'Field212', // # of campers
+		'firstCamperFirstName' => 'Field1', // first camper first name
+		'firstCamperLastName' => 'Field2', // first camper last name
+		'firstCamperCampOne' => 'Field99', // Mid July Alabama (July 9 - 13) (empty if not selected)
+		'firstCamperCampTwo' => 'Field100', // Late July Alabama (July 23 - 27) (empty if not selected)
+		'firstCamperCampOneType' => 'Field30', // Mid July Alabama Type of Camper (empty if not selected)
+		'firstCamperCampTwoType' => 'Field210', // Late July Alabama Type of Camper (empty if not selected)
+		'secondCamperFirstName' => 'Field13', // second camper first name
+		'secondCamperLastName' => 'Field14', // second camper last name
+		'secondCamperCampOne' => 'Field224', // Mid July Alabama (July 9 - 13) (empty if not selected)
+		'secondCamperCampTwo' => 'Field225', // Late July Alabama (July 23 - 27) (empty if not selected)
+		'secondCamperCampOneType' => 'Field324', // Mid July Alabama Type of Camper (empty if not selected)
+		'secondCamperCampTwoType' => 'Field325' // Late July Alabama Type of Camper (empty if not selected)
+	),
+	array(
+		'hash' => 'zx3659u01qss9c', // 2018-middle-school-camp-application-deposit
+		'email' => 'Field200', // email field
+		'athleteCount' => 'Field212', // # of campers
+		'firstCamperFirstName' => 'Field1', // first camper first name
+		'firstCamperLastName' => 'Field2', // first camper last name
+		'firstCamperCampOne' => 'Field99', // Mid July Alabama (July 9 - 13) (empty if not selected)
+		'firstCamperCampTwo' => 'Field100', // Late July Alabama (July 23 - 27) (empty if not selected)
+		'firstCamperCampOneType' => 'Field30', // Mid July Alabama Type of Camper (empty if not selected)
+		'firstCamperCampTwoType' => 'Field210', // Late July Alabama Type of Camper (empty if not selected)
+		'secondCamperFirstName' => 'Field13', // second camper first name
+		'secondCamperLastName' => 'Field14', // second camper last name
+		'secondCamperCampOne' => 'Field224', // Mid July Alabama (July 9 - 13) (empty if not selected)
+		'secondCamperCampTwo' => 'Field225', // Late July Alabama (July 23 - 27) (empty if not selected)
+		'secondCamperCampOneType' => 'Field324', // Mid July Alabama Type of Camper (empty if not selected)
+		'secondCamperCampTwoType' => 'Field325' // Late July Alabama Type of Camper (empty if not selected)
+	),
+	array(
+		'hash' => 'z5eqt7w169o76z', // 2018-middle-school-camper-application-full-pay
+		'email' => 'Field200', // email field
+		'athleteCount' => 'Field212', // # of campers
+		'firstCamperFirstName' => 'Field1', // first camper first name
+		'firstCamperLastName' => 'Field2', // first camper last name
+		'firstCamperCampOne' => 'Field99', // Mid July Alabama (July 9 - 13) (empty if not selected)
+		'firstCamperCampTwo' => 'Field100', // Late July Alabama (July 23 - 27) (empty if not selected)
+		'firstCamperCampOneType' => 'Field30', // Mid July Alabama Type of Camper (empty if not selected)
+		'firstCamperCampTwoType' => 'Field210', // Late July Alabama Type of Camper (empty if not selected)
+		'secondCamperFirstName' => 'Field13', // second camper first name
+		'secondCamperLastName' => 'Field14', // second camper last name
+		'secondCamperCampOne' => 'Field224', // Mid July Alabama (July 9 - 13) (empty if not selected)
+		'secondCamperCampTwo' => 'Field225', // Late July Alabama (July 23 - 27) (empty if not selected)
+		'secondCamperCampOneType' => 'Field324', // Mid July Alabama Type of Camper (empty if not selected)
+		'secondCamperCampTwoType' => 'Field325' // Late July Alabama Type of Camper (empty if not selected)
+	),
+);
+
 $apiKey = '0QAK-VS36-I6BO-AEMY';
 $subdomain = 'wideopencamps';
 function getEntries($formHashes) {
 	$entries = array();
 
 	foreach ($formHashes as $formHash) {
-		ChromePhp::log($formHash[0]);
+		//ChromePhp::log($formHash[0]);
 		$identifier = "system=true&Filter1=Field". $formHash[1] . "+Is_equal_to+" . $_POST['data'];
 		$entry = getEntry($formHash[0], $identifier);
 		if(isset($entry) && sizeof($entry) > 0){
 			// $entry is an array of WufooEntry objects
 			// create Registration using $registrationBuilder
 			$registrationBuilder = new RegistrationBuilder;
+			$wufooEntryObjects = array();
 			$entryIds = array_keys($entry);
 			foreach($entryIds as $entryId){
-				ChromePhp::log($entry{$entryId});
-				//ChromePhp::log($entryId);
+				//ChromePhp::log($entry{$entryId});
+				array_push($wufooEntryObjects, $entry{$entryId});
 			}
-			//$registrationBuilder->buildRegistration($entry['Field200'], $entry['Field1'], $entry['Field2'],
-			//array($entry['Field99'], $entry['Field100']), array($entry['Field30'], $entry['Field210']), $entry['Field13'], $entry['Field14'],
-		  //array($entry['Field224'], $entry['Field225']), array($entry['Field324'], $entry['Field325']));
-			//ChromePhp::log($entry);
-			//ChromePhp::log($entry{146});
-			array_push($entries, $entry);
+			$entries[$formHash[0]] = $wufooEntryObjects;
 		}
 	}
 
@@ -132,6 +212,51 @@ function getEntry($formHash, $identifier = null) {
 
 	$wrapper = new WufooApiWrapper($apiKey, $subdomain);
 	return $wrapper->getEntries($formHash, 'forms', $identifier);
+}
+
+function getRegistrationsFromEntries($entries){
+	// $entry is an array of WufooEntry objects
+	// create Registration using $registrationBuilder
+	ChromePhp::log("getRegistrationsFromEntries");
+	if(isset($entries) && sizeof($entries) > 0){
+		$entryIds = array_keys($entries);
+		foreach($entryIds as $entryId){
+			// entry id is the form hash
+			$entryMap = getEntryMap($entryId);
+			$formRegistrationEntries = $entries{$entryId};
+			foreach ($formRegistrationEntries as $formRegistrationEntry) {
+				ChromePhp::log($formRegistrationEntry);
+				// create Registration object
+				getRegistration($formRegistrationEntry, $entryMap);
+			}
+		}
+	}
+	//$registrationBuilder->buildRegistration($entry['Field200'], $entry['Field1'], $entry['Field2'],
+	//array($entry['Field99'], $entry['Field100']), array($entry['Field30'], $entry['Field210']), $entry['Field13'], $entry['Field14'],
+	//array($entry['Field224'], $entry['Field225']), array($entry['Field324'], $entry['Field325']));
+	//ChromePhp::log($entry);
+	//ChromePhp::log($entry{146});
+	return $entries;
+}
+
+function getEntryMap($formHash){
+	global $entryMaps;
+	$em;
+	foreach ($entryMaps as $entryMap) {
+		ChromePhp::log($entryMap{'hash'});
+		if($entryMap{'hash'} === $formHash){
+			$em = $entryMap;
+		}
+	}
+	ChromePhp::log($em);
+	return $em;
+}
+
+function getRegistration($formRegistrationEntry, $entryMap){
+	$registrationBuilder = new RegistrationBuilder;
+	ChromePhp::log("getRegistration");
+	ChromePhp::log($formRegistrationEntry->{'EntryId'});
+	$registrationBuilder->buildRegistration($formRegistrationEntry, $entryMap);
 }
 
 /**
