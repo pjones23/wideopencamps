@@ -4,6 +4,7 @@ require_once 'WufooPHPAPIWrapper/WufooApiWrapper.php';
 require_once 'WufooPHPAPIWrapper/WufooValueObjects.php';
 require_once 'RegistrationBuilder.php';
 require_once 'Registration.php';
+require_once 'Camper.php';
 
 /**
  * The construct method. This is where we hook all of our scripts outlined below.
@@ -46,12 +47,11 @@ function getBalances() {
 		return;
 
 	try{
-		//$forms = getForms(null);
-		//ChromePhp::log($forms);
 		global $campFormHashes;
 		global $balanceFormHashes;
 		$entries = getEntries($campFormHashes);
-		getRegistrationsFromEntries($entries);
+		$registrations = getRegistrationsFromEntries($entries);
+		ChromePhp::log($registrations);
 		//$balanceEntries = getEntries($balanceFormHashes);
 
 		//ChromePhp::log(print_r($entries));
@@ -217,6 +217,7 @@ function getEntry($formHash, $identifier = null) {
 function getRegistrationsFromEntries($entries){
 	// $entry is an array of WufooEntry objects
 	// create Registration using $registrationBuilder
+	$registrations = array();
 	ChromePhp::log("getRegistrationsFromEntries");
 	if(isset($entries) && sizeof($entries) > 0){
 		$entryIds = array_keys($entries);
@@ -225,18 +226,18 @@ function getRegistrationsFromEntries($entries){
 			$entryMap = getEntryMap($entryId);
 			$formRegistrationEntries = $entries{$entryId};
 			foreach ($formRegistrationEntries as $formRegistrationEntry) {
-				ChromePhp::log($formRegistrationEntry);
+				// ChromePhp::log($formRegistrationEntry);
 				// create Registration object
-				getRegistration($formRegistrationEntry, $entryMap);
+				$registration = getRegistration($formRegistrationEntry, $entryMap);
+				ChromePhp::log("here");
+		    foreach ($registration->getCampers() as $camper) {
+					ChromePhp::log($camper->getName());
+				}
+				array_push($registrations, $registration);
 			}
 		}
 	}
-	//$registrationBuilder->buildRegistration($entry['Field200'], $entry['Field1'], $entry['Field2'],
-	//array($entry['Field99'], $entry['Field100']), array($entry['Field30'], $entry['Field210']), $entry['Field13'], $entry['Field14'],
-	//array($entry['Field224'], $entry['Field225']), array($entry['Field324'], $entry['Field325']));
-	//ChromePhp::log($entry);
-	//ChromePhp::log($entry{146});
-	return $entries;
+	return $registrations;
 }
 
 function getEntryMap($formHash){
@@ -256,7 +257,8 @@ function getRegistration($formRegistrationEntry, $entryMap){
 	$registrationBuilder = new RegistrationBuilder;
 	ChromePhp::log("getRegistration");
 	ChromePhp::log($formRegistrationEntry->{'EntryId'});
-	$registrationBuilder->buildRegistration($formRegistrationEntry, $entryMap);
+	$registration = $registrationBuilder->buildRegistration($formRegistrationEntry, $entryMap);
+	return $registration;
 }
 
 /**
