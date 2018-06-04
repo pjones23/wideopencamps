@@ -52,15 +52,17 @@ function getBalances() {
 		$entries = getEntries($campFormHashes);
 		$registrations = getRegistrationsFromEntries($entries);
 		ChromePhp::log($registrations);
-		//$balanceEntries = getEntries($balanceFormHashes);
+		$paymentEntries = getEntries($balanceFormHashes);
+		$payments = getPaymentsFromEntries($paymentEntries);
+		ChromePhp::log($payments);
 
-		//ChromePhp::log(print_r($entries));
+
 	} catch (Exception $e){
 		ChromePhp::log($e->getMessage());
 	}
 
-	//echo json_encode(array('body' => wp_kses_post($_POST['data']) . "_posted", ));
-	echo json_encode(array('body' => array_values($entries, $balanceEntries)));
+	echo json_encode(array('body' => wp_kses_post($_POST['data']) . "_posted", ));
+	//echo json_encode(array('body' => array_values($entries, $balanceEntries)));
 	//echo json_encode(array('body' => array_values($forms)));
 	// This funciton is REQUIRED within WordPress or else you'll get 'parse' errors
 	// because there's a zero at the end of your JSON
@@ -178,6 +180,14 @@ $entryMaps = array(
 		'secondCamperCampOneType' => 'Field324', // Mid July Alabama Type of Camper (empty if not selected)
 		'secondCamperCampTwoType' => 'Field325' // Late July Alabama Type of Camper (empty if not selected)
 	),
+	array(
+		'hash' => 'k16c3f9c0jwz7dm', // 2018-middle-school-camper-application-full-pay
+		'campOne' => 'Field114', // Mid July Alabama (July 9 - 13) (empty if not selected)
+		'campTwo' => 'Field115', // Late July Alabama (July 23 - 27) (empty if not selected)
+		'campThree' => 'Field117', // Middle School Day Camp (June 20-23) (empty if not selected)
+		'amount' => 'PurchaseTotal', // Middle School Day Camp (June 20-23) (empty if not selected)
+		'status' => 'Status', // Middle School Day Camp (June 20-23) (empty if not selected)
+	)
 );
 
 $apiKey = '0QAK-VS36-I6BO-AEMY';
@@ -218,7 +228,6 @@ function getRegistrationsFromEntries($entries){
 	// $entry is an array of WufooEntry objects
 	// create Registration using $registrationBuilder
 	$registrations = array();
-	ChromePhp::log("getRegistrationsFromEntries");
 	if(isset($entries) && sizeof($entries) > 0){
 		$entryIds = array_keys($entries);
 		foreach($entryIds as $entryId){
@@ -226,10 +235,8 @@ function getRegistrationsFromEntries($entries){
 			$entryMap = getEntryMap($entryId);
 			$formRegistrationEntries = $entries{$entryId};
 			foreach ($formRegistrationEntries as $formRegistrationEntry) {
-				// ChromePhp::log($formRegistrationEntry);
 				// create Registration object
 				$registration = getRegistration($formRegistrationEntry, $entryMap);
-				ChromePhp::log("here");
 		    foreach ($registration->getCampers() as $camper) {
 					ChromePhp::log($camper->getName());
 				}
@@ -244,21 +251,69 @@ function getEntryMap($formHash){
 	global $entryMaps;
 	$em;
 	foreach ($entryMaps as $entryMap) {
-		ChromePhp::log($entryMap{'hash'});
 		if($entryMap{'hash'} === $formHash){
 			$em = $entryMap;
 		}
 	}
-	ChromePhp::log($em);
 	return $em;
 }
 
 function getRegistration($formRegistrationEntry, $entryMap){
 	$registrationBuilder = new RegistrationBuilder;
-	ChromePhp::log("getRegistration");
-	ChromePhp::log($formRegistrationEntry->{'EntryId'});
 	$registration = $registrationBuilder->buildRegistration($formRegistrationEntry, $entryMap);
 	return $registration;
+}
+
+function getPaymentsFromEntries($paymentEntries){
+	$payments = array();
+	if(isset($paymentEntries) && count($paymentEntries) > 0){
+		$entryIds = array_keys($paymentEntries);
+		foreach ($entryIds as $entryId) {
+			// entry id is the form hash
+			$entryMap = getEntryMap($entryId);
+			$paymentForm = $paymentEntries{$entryId};
+			foreach ($paymentForm as $paymentEntry) {
+				$payment = getPaymentFromEntry($paymentEntry, $entryMap);
+				if(isset($payment)){
+					array_push($payments, $payment);
+				}
+			}
+		}
+	}
+	return $payments;
+}
+
+function getPaymentFromEntry($paymentEntry, $entryMap){
+	$payment = null;
+	$campOne = "";
+	if(isset($paymentEntry->{$entryMap{'campOne'}})){
+		$campOne = $paymentEntry->{$entryMap{'campOne'}};
+	}
+
+	$campTwo = "";
+	if(isset($paymentEntry->{$entryMap{'campTwo'}})){
+		$campTwo = $paymentEntry->{$entryMap{'campTwo'}};
+	}
+
+	$campThree = "";
+	if(isset($paymentEntry->{$entryMap{'campThree'}})){
+		$campThree = $paymentEntry->{$entryMap{'campThree'}};
+	}
+
+	$amount = "";
+	if(isset($paymentEntry->{$entryMap{'amount'}})){
+		$amount = $paymentEntry->{$entryMap{'amount'}};
+	}
+
+	$status = "";
+	if(isset($paymentEntry->{$entryMap{'status'}})){
+		$status = $paymentEntry->{$entryMap{'status'}};
+	}
+
+	$payment = array('campOne' => $campOne, 'campTwo' => $campTwo, 'campThree' => $campThree,
+		'amount' => $amount, 'status' => $status);
+
+	return $payment;
 }
 
 /**
