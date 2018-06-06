@@ -7,7 +7,6 @@ require_once 'Camper.php';
 class RegistrationBuilder{
 
   public function buildRegistration($entry, $entryMap){
-    ChromePhp::log("buildRegistration");
     //ChromePhp::log($entry->{'EntryId'}); // gives EntryID
     //ChromePhp::log($entryMap{'email'}); // gives field of Email
     //ChromePhp::log($entry->{$entryMap{'email'}}); // gives the email
@@ -17,7 +16,30 @@ class RegistrationBuilder{
     }
     //ChromePhp::log($email);
 
-    $registration = new Registration($email);
+    $dateCreated = "";
+    if(isset($entry->{$entryMap{'dateCreated'}})){
+      $dateCreated = $entry->{$entryMap{'dateCreated'}};
+    }
+    //ChromePhp::log($dateCreated);
+
+    $registration = new Registration($email, $dateCreated);
+
+    $paymentStatus = "";
+    if(isset($entry->{$entryMap{'status'}})){
+      $paymentStatus = $entry->{$entryMap{'status'}};
+    }
+    //ChromePhp::log($paymentStatus);
+
+    $paymentAmount = "";
+    if(isset($entry->{$entryMap{'amount'}})){
+      $paymentAmount = $entry->{$entryMap{'amount'}};
+    }
+    //ChromePhp::log($paymentAmount);
+
+    if(!empty($paymentStatus) && !empty($paymentAmount)){
+      $payment = array('paymentStatus' => $paymentStatus, 'paymentAmount' => $paymentAmount);
+      $registration->setPayment($payment);
+    }
 
     $athleteCount = "";
     if(isset($entry->{$entryMap{'athleteCount'}})){

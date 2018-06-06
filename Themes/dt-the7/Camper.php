@@ -21,6 +21,14 @@ class Camper{
     return $this->firstName." ".$this->lastName;
   }
 
+  public function getFirstName(){
+    return $this->firstName;
+  }
+
+  public function getLastName(){
+    return $this->lastName;
+  }
+
   public function getCampOne(){
     return $this->campOne;
   }
@@ -38,7 +46,7 @@ class Camper{
   }
 
   public function getCost(){
-
+    return 399;
   }
 
 }
