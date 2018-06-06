@@ -5,6 +5,7 @@ require_once 'WufooPHPAPIWrapper/WufooValueObjects.php';
 require_once 'RegistrationBuilder.php';
 require_once 'Registration.php';
 require_once 'Camper.php';
+require_once 'CampInfo.php';
 
 /**
  * The construct method. This is where we hook all of our scripts outlined below.
@@ -56,153 +57,20 @@ function getBalances() {
 		$payments = getPaymentsFromEntries($paymentEntries);
 		ChromePhp::log($payments);
 		$balances = createBalances($registrations, $payments);
+		ChromePhp::log("Here");
+		ChromePhp::log($balances);
+		echo json_encode($balances);
 	} catch (Exception $e){
 		ChromePhp::log($e->getMessage());
 	}
 
-	echo json_encode(array('body' => wp_kses_post($_POST['data']) . "_posted", ));
+	//echo json_encode(array('body' => wp_kses_post($_POST['data']) . "_posted", ));
 	//echo json_encode(array('body' => array_values($entries, $balanceEntries)));
 	//echo json_encode(array('body' => array_values($forms)));
 	// This funciton is REQUIRED within WordPress or else you'll get 'parse' errors
 	// because there's a zero at the end of your JSON
 	wp_die();
 }
-
-$campFormHashes = array(
-	array(
-		'pmxpg7a0mnbsnb', // 2018-camper-application-medical-form-deposit
-		'200', // email field
-		'212' // # of campers
-	),
-	array(
-		's1h1wpu1e3p7m2', // 2018-camper-application-medical-form-full-pay
-		'200', // email field
-		'212', // # of campers
-	),
-	array(
-		'zx3659u01qss9c', // 2018-middle-school-camp-application-deposit
-		'200', // email field
-		'212' // # of campers
-	),
-	array(
-		'z5eqt7w169o76z', // 2018-middle-school-camper-application-full-pay
-		'200', // email field
-		'212' // # of campers
-	),
-);
-
-$balanceFormHashes = array(
-	array(
-		'k16c3f9c0jwz7dm', // wide-open-balance
-		'12'// email field
-	)
-);
-
-/*
-ChromePhp::log($email);
-ChromePhp::log($firstCamperFirstName);
-ChromePhp::log($firstCamperLastName);
-ChromePhp::log($firstCamperSelectedCamps);
-ChromePhp::log($firstCamperCamperTypes);
-ChromePhp::log($secondCamperFirstName);
-ChromePhp::log($secondCamperLastName);
-ChromePhp::log($secondCamperSelectedCamps);
-ChromePhp::log($secondCamperCamperTypes);
-*/
-
-$entryMaps = array(
-	array(
-		'hash' => 'pmxpg7a0mnbsnb', // 2018-camper-application-medical-form-deposit
-		'email' => 'Field200', // email field
-		'dateCreated' => 'DateCreated', // date created
-		'athleteCount' => 'Field212', // # of campers
-		'firstCamperFirstName' => 'Field1', // first camper first name
-		'firstCamperLastName' => 'Field2', // first camper last name
-		'firstCamperCampOne' => 'Field99', // Mid July Alabama (July 9 - 13) (empty if not selected)
-		'firstCamperCampTwo' => 'Field100', // Late July Alabama (July 23 - 27) (empty if not selected)
-		'firstCamperCampOneType' => 'Field30', // Mid July Alabama Type of Camper (empty if not selected)
-		'firstCamperCampTwoType' => 'Field210', // Late July Alabama Type of Camper (empty if not selected)
-		'secondCamperFirstName' => 'Field13', // second camper first name
-		'secondCamperLastName' => 'Field14', // second camper last name
-		'secondCamperCampOne' => 'Field224', // Mid July Alabama (July 9 - 13) (empty if not selected)
-		'secondCamperCampTwo' => 'Field225', // Late July Alabama (July 23 - 27) (empty if not selected)
-		'secondCamperCampOneType' => 'Field324', // Mid July Alabama Type of Camper (empty if not selected)
-		'secondCamperCampTwoType' => 'Field325', // Late July Alabama Type of Camper (empty if not selected)
-		'amount' => 'PurchaseTotal', // Middle School Day Camp (June 20-23) (empty if not selected)
-		'status' => 'Status' // Middle School Day Camp (June 20-23) (empty if not selected)
-	),
-	array(
-		'hash' => 's1h1wpu1e3p7m2', // 2018-camper-application-medical-form-full-pay
-		'email' => 'Field200', // email field
-		'dateCreated' => 'DateCreated', // date created
-		'athleteCount' => 'Field212', // # of campers
-		'firstCamperFirstName' => 'Field1', // first camper first name
-		'firstCamperLastName' => 'Field2', // first camper last name
-		'firstCamperCampOne' => 'Field99', // Mid July Alabama (July 9 - 13) (empty if not selected)
-		'firstCamperCampTwo' => 'Field100', // Late July Alabama (July 23 - 27) (empty if not selected)
-		'firstCamperCampOneType' => 'Field30', // Mid July Alabama Type of Camper (empty if not selected)
-		'firstCamperCampTwoType' => 'Field210', // Late July Alabama Type of Camper (empty if not selected)
-		'secondCamperFirstName' => 'Field13', // second camper first name
-		'secondCamperLastName' => 'Field14', // second camper last name
-		'secondCamperCampOne' => 'Field224', // Mid July Alabama (July 9 - 13) (empty if not selected)
-		'secondCamperCampTwo' => 'Field225', // Late July Alabama (July 23 - 27) (empty if not selected)
-		'secondCamperCampOneType' => 'Field324', // Mid July Alabama Type of Camper (empty if not selected)
-		'secondCamperCampTwoType' => 'Field325', // Late July Alabama Type of Camper (empty if not selected)
-		'amount' => 'PurchaseTotal', // Middle School Day Camp (June 20-23) (empty if not selected)
-		'status' => 'Status' // Middle School Day Camp (June 20-23) (empty if not selected)
-	),
-	array(
-		'hash' => 'zx3659u01qss9c', // 2018-middle-school-camp-application-deposit
-		'email' => 'Field200', // email field
-		'dateCreated' => 'DateCreated', // date created
-		'athleteCount' => 'Field212', // # of campers
-		'firstCamperFirstName' => 'Field1', // first camper first name
-		'firstCamperLastName' => 'Field2', // first camper last name
-		'firstCamperCampOne' => 'Field99', // Mid July Alabama (July 9 - 13) (empty if not selected)
-		'firstCamperCampTwo' => 'Field100', // Late July Alabama (July 23 - 27) (empty if not selected)
-		'firstCamperCampOneType' => 'Field30', // Mid July Alabama Type of Camper (empty if not selected)
-		'firstCamperCampTwoType' => 'Field210', // Late July Alabama Type of Camper (empty if not selected)
-		'secondCamperFirstName' => 'Field13', // second camper first name
-		'secondCamperLastName' => 'Field14', // second camper last name
-		'secondCamperCampOne' => 'Field224', // Mid July Alabama (July 9 - 13) (empty if not selected)
-		'secondCamperCampTwo' => 'Field225', // Late July Alabama (July 23 - 27) (empty if not selected)
-		'secondCamperCampOneType' => 'Field324', // Mid July Alabama Type of Camper (empty if not selected)
-		'secondCamperCampTwoType' => 'Field325', // Late July Alabama Type of Camper (empty if not selected)
-		'amount' => 'PurchaseTotal', // Middle School Day Camp (June 20-23) (empty if not selected)
-		'status' => 'Status' // Middle School Day Camp (June 20-23) (empty if not selected)
-	),
-	array(
-		'hash' => 'z5eqt7w169o76z', // 2018-middle-school-camper-application-full-pay
-		'email' => 'Field200', // email field
-		'dateCreated' => 'DateCreated', // date created
-		'athleteCount' => 'Field212', // # of campers
-		'firstCamperFirstName' => 'Field1', // first camper first name
-		'firstCamperLastName' => 'Field2', // first camper last name
-		'firstCamperCampOne' => 'Field99', // Mid July Alabama (July 9 - 13) (empty if not selected)
-		'firstCamperCampTwo' => 'Field100', // Late July Alabama (July 23 - 27) (empty if not selected)
-		'firstCamperCampOneType' => 'Field30', // Mid July Alabama Type of Camper (empty if not selected)
-		'firstCamperCampTwoType' => 'Field210', // Late July Alabama Type of Camper (empty if not selected)
-		'secondCamperFirstName' => 'Field13', // second camper first name
-		'secondCamperLastName' => 'Field14', // second camper last name
-		'secondCamperCampOne' => 'Field224', // Mid July Alabama (July 9 - 13) (empty if not selected)
-		'secondCamperCampTwo' => 'Field225', // Late July Alabama (July 23 - 27) (empty if not selected)
-		'secondCamperCampOneType' => 'Field324', // Mid July Alabama Type of Camper (empty if not selected)
-		'secondCamperCampTwoType' => 'Field325', // Late July Alabama Type of Camper (empty if not selected)
-		'amount' => 'PurchaseTotal', // Middle School Day Camp (June 20-23) (empty if not selected)
-		'status' => 'Status' // Middle School Day Camp (June 20-23) (empty if not selected)
-	),
-	array(
-		'hash' => 'k16c3f9c0jwz7dm', // 2018-middle-school-camper-application-full-pay
-		'firstName' => 'Field2', // Mid July Alabama (July 9 - 13) (empty if not selected)
-		'lastName' => 'Field3', // Late July Alabama (July 23 - 27) (empty if not selected)
-		'campThree' => 'Field117', // Middle School Day Camp (June 20-23) (empty if not selected)
-		'campOne' => 'Field114', // Mid July Alabama (July 9 - 13) (empty if not selected)
-		'campTwo' => 'Field115', // Late July Alabama (July 23 - 27) (empty if not selected)
-		'campThree' => 'Field117', // Middle School Day Camp (June 20-23) (empty if not selected)
-		'amount' => 'PurchaseTotal', // Middle School Day Camp (June 20-23) (empty if not selected)
-		'status' => 'Status' // Middle School Day Camp (June 20-23) (empty if not selected)
-	)
-);
 
 $apiKey = '0QAK-VS36-I6BO-AEMY';
 $subdomain = 'wideopencamps';
@@ -211,7 +79,7 @@ function getEntries($formHashes) {
 
 	foreach ($formHashes as $formHash) {
 		//ChromePhp::log($formHash[0]);
-		$identifier = "system=true&Filter1=Field". $formHash[1] . "+Is_equal_to+" . $_POST['data'];
+		$identifier = "system=true&Filter1=Field". $formHash[1] . "+Is_equal_to+" . $_POST['data']."&Filter2=CompleteSubmission+Is_equal_to+1";
 		$entry = getEntry($formHash[0], $identifier);
 		if(isset($entry) && sizeof($entry) > 0){
 			// $entry is an array of WufooEntry objects
@@ -342,7 +210,7 @@ function getPaymentFromEntry($paymentEntry, $entryMap){
 }
 
 function createBalances($registrations, $payments){
-	$balances = null;
+	$balances = array();
 	$registrationPayments = $payments; // creating copy to not modify original payments array
 	foreach ($registrations as $registration) {
 		$registrationCost = $registration->getCost();
@@ -371,6 +239,7 @@ function createBalances($registrations, $payments){
 		ChromePhp::log("Remaining Balance: ".$remainingBalance);
 		$balance = createBalance($registration, $remainingBalance);
 		ChromePhp::log($balance);
+		array_push($balances, $balance);
 	}
 	return $balances;
 }
@@ -380,11 +249,20 @@ function createBalance($registration, $remainingBalance){
 	$dateCreated = $registration->getDateCreated();
 	$registrationCampers = $registration->getCampers();
 	$campers = array();
+	$camps = array();
 	foreach($registrationCampers as $camper){
-		$description = $camper->getName()." ".$camper->getCampOne()." ".$camper->getCampOneType()." ".$camper->getCampTwo()." ".$camper->getCampTwoType();
+		$campOne = $camper->getCampOne();
+		$campTwo = $camper->getCampTwo();
+		$description = $camper->getName()." ".$campOne." ".$camper->getCampOneType()." ".$campTwo." ".$camper->getCampTwoType();
+		if(!empty($campOne) && !in_array($campOne, $camps)){
+			array_push($camps, $campOne);
+		}
+		if(!empty($campTwo) && !in_array($campTwo, $camps)){
+			array_push($camps, $campTwo);
+		}
 		array_push($campers, $description);
 	}
-	$balance = array('email' => $email, 'date' => $dateCreated, 'campers' => $campers, "remainingBalance" => $remainingBalance);
+	$balance = array('email' => $email, 'date' => $dateCreated, 'campers' => $campers, 'camps' => $camps, "remainingBalance" => $remainingBalance);
 	return $balance;
 }
 
@@ -430,9 +308,6 @@ function isPaymentApplicableToRegistration($registration, $payment){
 	return $isApplicable;
 }
 
-$midJulyCamps = array('Mid July Alabama (July 9-13)', 'Mid July Alabama (July 9 - 13)');
-$lateJulyCamps = array('Late July Alabama (July 23-27)', 'Late July Alabama (July 23 - 27)');
-$middleSchoolCamps = array('Middle School Day Camp (June 20-23)', 'Middle School Day Camp (June 20-23)');
 function isSameCamp($campOne, $campTwo){
 	global $midJulyCamps;
 	global $lateJulyCamps;

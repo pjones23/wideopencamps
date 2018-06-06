@@ -1,4 +1,6 @@
 <?php
+require_once 'CampInfo.php';
+
 class Camper{
 
   private $firstName;
@@ -46,7 +48,14 @@ class Camper{
   }
 
   public function getCost(){
-    return 399;
+    $cost = 0;
+    if(!empty($this->campOne) && !empty($this->campOneType)){
+      $cost = getCampCost($this->campOne, $this->campOneType);
+    }
+    if(!empty($this->campTwo) && !empty($this->campTwoType)){
+      $cost = $cost + getCampCost($this->campTwo, $this->campTwoType);
+    }
+    return $cost;
   }
 
 }
