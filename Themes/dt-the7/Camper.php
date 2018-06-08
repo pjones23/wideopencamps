@@ -36,7 +36,11 @@ class Camper{
   }
 
   public function getCampOneType(){
-    return $this->campOneType;
+    if(!empty($this->campOne) && empty($this->campOneType)){
+      return "Resident Camper";
+    } else {
+      return $this->campOneType;
+    }
   }
 
   public function getCampTwo(){
@@ -44,16 +48,20 @@ class Camper{
   }
 
   public function getCampTwoType(){
-    return $this->campTwoType;
+    if(!empty($this->campTwo) && empty($this->campTwoType)){
+      return "Resident Camper";
+    } else {
+      return $this->campTwoType;
+    }
   }
 
   public function getCost(){
     $cost = 0;
-    if(!empty($this->campOne) && !empty($this->campOneType)){
-      $cost = getCampCost($this->campOne, $this->campOneType);
+    if(!empty($this->campOne)){
+      $cost = getCampCost($this->campOne, $this->getCampOneType());
     }
-    if(!empty($this->campTwo) && !empty($this->campTwoType)){
-      $cost = $cost + getCampCost($this->campTwo, $this->campTwoType);
+    if(!empty($this->campTwo)){
+      $cost = $cost + getCampCost($this->campTwo, $this->getCampTwoType());
     }
     return $cost;
   }

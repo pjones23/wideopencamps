@@ -249,20 +249,14 @@ function createBalance($registration, $remainingBalance){
 	$dateCreated = $registration->getDateCreated();
 	$registrationCampers = $registration->getCampers();
 	$campers = array();
-	$camps = array();
 	foreach($registrationCampers as $camper){
-		$campOne = $camper->getCampOne();
-		$campTwo = $camper->getCampTwo();
-		$description = $camper->getName()." ".$campOne." ".$camper->getCampOneType()." ".$campTwo." ".$camper->getCampTwoType();
-		if(!empty($campOne) && !in_array($campOne, $camps)){
-			array_push($camps, $campOne);
-		}
-		if(!empty($campTwo) && !in_array($campTwo, $camps)){
-			array_push($camps, $campTwo);
-		}
-		array_push($campers, $description);
+		$camperDetails = array('firstName' => trim($camper->getFirstName()),
+		'lastName' => trim($camper->getLastName()), 'campOne' => trim($camper->getCampOne()),
+		'campOneType' => trim($camper->getCampOneType()), 'campTwo' => trim($camper->getCampTwo()),
+		'campTwoType' => trim($camper->getCampTwoType()));
+		array_push($campers, $camperDetails);
 	}
-	$balance = array('email' => $email, 'date' => $dateCreated, 'campers' => $campers, 'camps' => $camps, "remainingBalance" => $remainingBalance);
+	$balance = array('email' => $email, 'date' => $dateCreated, 'campers' => $campers, "remainingBalance" => $remainingBalance);
 	return $balance;
 }
 
