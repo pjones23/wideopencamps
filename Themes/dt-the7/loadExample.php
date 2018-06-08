@@ -118,7 +118,7 @@ function getRegistrationsFromEntries($entries){
 			$formRegistrationEntries = $entries{$entryId};
 			foreach ($formRegistrationEntries as $formRegistrationEntry) {
 				// create Registration object
-				$registration = getRegistration($formRegistrationEntry, $entryMap);
+				$registration = getRegistration($entryId, $formRegistrationEntry, $entryMap);
 		    foreach ($registration->getCampers() as $camper) {
 					ChromePhp::log($camper->getName());
 				}
@@ -140,9 +140,9 @@ function getEntryMap($formHash){
 	return $em;
 }
 
-function getRegistration($formRegistrationEntry, $entryMap){
+function getRegistration($formHash, $formRegistrationEntry, $entryMap){
 	$registrationBuilder = new RegistrationBuilder;
-	$registration = $registrationBuilder->buildRegistration($formRegistrationEntry, $entryMap);
+	$registration = $registrationBuilder->buildRegistration($formHash, $formRegistrationEntry, $entryMap);
 	return $registration;
 }
 
@@ -214,6 +214,7 @@ function createBalances($registrations, $payments){
 	$registrationPayments = $payments; // creating copy to not modify original payments array
 	foreach ($registrations as $registration) {
 		$registrationCost = $registration->getCost();
+		ChromePhp::log("registration cost: " + $registrationCost);
 		$paymentAtRegistration = $registration->getAmountPaidDuringRegistration();
 		$remainingBalance = $registrationCost - $paymentAtRegistration;
 		ChromePhp::log($remainingBalance);

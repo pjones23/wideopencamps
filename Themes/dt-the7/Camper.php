@@ -1,6 +1,5 @@
 <?php
 require_once 'CampInfo.php';
-
 class Camper{
 
   private $firstName;
@@ -32,24 +31,34 @@ class Camper{
   }
 
   public function getCampOne(){
-    return $this->campOne;
+    return getCampFormattedForPayBalance($this->campOne);
   }
 
   public function getCampOneType(){
+    global $middleSchoolCamps;
     if(!empty($this->campOne) && empty($this->campOneType)){
-      return "Resident Camper";
+      if(in_array($this->campOne, $middleSchoolCamps)){
+        return "Day Camper";
+      } else {
+        return "Resident Camper";
+      }
     } else {
       return $this->campOneType;
     }
   }
 
   public function getCampTwo(){
-    return $this->campTwo;
+    return getCampFormattedForPayBalance($this->campTwo);
   }
 
   public function getCampTwoType(){
+    global $middleSchoolCamps;
     if(!empty($this->campTwo) && empty($this->campTwoType)){
-      return "Resident Camper";
+      if(in_array($this->campOne, $middleSchoolCamps)){
+        return "Day Camper";
+      } else {
+        return "Resident Camper";
+      }
     } else {
       return $this->campTwoType;
     }

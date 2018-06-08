@@ -46,7 +46,7 @@ class Registration{
     // return total cost from campers
     $totalCost = 0;
     foreach ($this->campers as $camper) {
-      $totalCost = $camper->getCost();
+      $totalCost = $totalCost + $camper->getCost();
     }
     return $totalCost;
   }

@@ -128,8 +128,9 @@ $lateJulyCamps = array('Late July Alabama (July 23-27)', 'Late July Alabama (Jul
 $middleSchoolCamps = array('Middle School Day Camp (June 20-23)', 'Middle School Day Camp (June 20-23)');
 
 function getCampCost($camp, $campType){
+	global $middleSchoolCamps;
 	$cost;
-	if(in_array($campOne, $middleSchoolCamps)){ // if middle school camp
+	if(in_array($camp, $middleSchoolCamps)){ // if middle school camp
 		$cost = 215;
 	} else if("Day Camper" === $campType){ // high school day camper camp
 		$cost = 290;
@@ -138,4 +139,27 @@ function getCampCost($camp, $campType){
 	}
 	return $cost;
 }
+
+function getCampFormattedForPayBalance($camp){
+	global $midJulyCamps;
+	global $lateJulyCamps;
+	global $middleSchoolCamps;
+	if(in_array($camp, $midJulyCamps)){
+		return "Mid July Alabama (July 9-13)";
+	} else if(in_array($camp, $lateJulyCamps)){
+		return "Late July Alabama (July 23-27)";
+	} else if(in_array($camp, $middleSchoolCamps)){
+		return "Middle School Day Camp (June 20-23)";
+	}
+	return $camp;
+}
+
+function isMiddleSchoolCampForm($formHash){
+	return ($formHash === 'zx3659u01qss9c' || $formHash === 'z5eqt7w169o76z');
+}
+
+function getMiddleSchoolCamp(){
+	return "Middle School Day Camp (June 20-23)";
+}
+
 ?>

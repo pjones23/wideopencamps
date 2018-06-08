@@ -2,11 +2,12 @@
 require_once 'ChromePhp.php';
 require_once 'WufooPHPAPIWrapper/WufooValueObjects.php';
 require_once 'Registration.php';
+require_once 'CampInfo.php';
 require_once 'Camper.php';
 
 class RegistrationBuilder{
 
-  public function buildRegistration($entry, $entryMap){
+  public function buildRegistration($formHash, $entry, $entryMap){
     //ChromePhp::log($entry->{'EntryId'}); // gives EntryID
     //ChromePhp::log($entryMap{'email'}); // gives field of Email
     //ChromePhp::log($entry->{$entryMap{'email'}}); // gives the email
@@ -21,6 +22,13 @@ class RegistrationBuilder{
       $dateCreated = $entry->{$entryMap{'dateCreated'}};
     }
     //ChromePhp::log($dateCreated);
+
+    $athleteCount = "";
+    if(isset($entry->{$entryMap{'athleteCount'}})){
+      $athleteCount = $entry->{$entryMap{'athleteCount'}};
+    }
+
+    ChromePhp::log("athleteCount: ".$athleteCount);
 
     $registration = new Registration($email, $dateCreated);
 
@@ -48,7 +56,6 @@ class RegistrationBuilder{
     //ChromePhp::log($athleteCount);
 
     //First Camper
-
     $firstCamperCampOne = "";
     if(isset($entry->{$entryMap{'firstCamperCampOne'}})){
       $firstCamperCampOne = $entry->{$entryMap{'firstCamperCampOne'}};
@@ -60,7 +67,12 @@ class RegistrationBuilder{
       $firstCamperCampTwo = $entry->{$entryMap{'firstCamperCampTwo'}};
     }
     //ChromePhp::log($firstCamperCampTwo);
+    // if no camp found, check if middle school form... if middle school form, assume middle school is camp one
+    if(empty($firstCamperCampOne) && empty($firstCamperCampTwo) && isMiddleSchoolCampForm($formHash)){
+      $firstCamperCampOne = getMiddleSchoolCamp();
+    }
 
+    ChromePhp::log("camp one: ".$firstCamperCampOne);
     if(!empty($firstCamperCampOne) || !empty($firstCamperCampTwo)){
       ChromePhp::log("Camper 1 present");
       $firstCamperFirstName = "";
@@ -108,6 +120,11 @@ class RegistrationBuilder{
     }
     //ChromePhp::log($secondCamperCampTwo);
 
+    if($athleteCount === "Two athletes" && empty($secondCamperCampOne) && empty($secondCamperCampTwo) && isMiddleSchoolCampForm($formHash)){
+      $secondCamperCampOne = getMiddleSchoolCamp();
+    }
+
+    ChromePhp::log("camp two: ".$secondCamperCampOne);
     if(!empty($secondCamperCampOne) || !empty($secondCamperCampTwo)){
       ChromePhp::log("Camper 2 present");
       $secondCamperFirstName = "";

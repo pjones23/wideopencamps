@@ -159,33 +159,37 @@ function createTable(balances){
 		firstNameFormInput.id = "firstNameFormInput" + "_" + i;
 		firstNameFormInput.name = "firstName";
 		firstNameFormInput.type = "hidden";
-		firstNameFormInput.value = balance.email;
+		firstNameFormInput.value = balance.campers[0].firstName;
 		balanceInfoForm.appendChild(firstNameFormInput);
 		// last name hidden field (use first camper)
 		var lastNameFormInput = document.createElement('input');
 		lastNameFormInput.id = "lastNameFormInput" + "_" + i;
 		lastNameFormInput.name = "lastName";
 		lastNameFormInput.type = "hidden";
-		lastNameFormInput.value = balance.email;
+		lastNameFormInput.value = balance.campers[0].lastName;
 		balanceInfoForm.appendChild(lastNameFormInput);
 		// selected camps hidden field
+		// mid july will be in camp one field. If it does not match mid july string then it will not be selected,
+		// so we are good if camp one is not mid july and it's placed here.
 		var midJulyCampFormInput = document.createElement('input');
 		midJulyCampFormInput.id = "midJulyCampFormInput" + "_" + i;
 		midJulyCampFormInput.name = "midJulyCamp";
 		midJulyCampFormInput.type = "hidden";
-		midJulyCampFormInput.value = balance.email;
+		midJulyCampFormInput.value = balance.campers[0].campOne;
 		balanceInfoForm.appendChild(midJulyCampFormInput);
 		var lateJulyCampFormInput = document.createElement('input');
 		lateJulyCampFormInput.id = "lateJulyCampFormInput" + "_" + i;
 		lateJulyCampFormInput.name = "lateJulyCamp";
 		lateJulyCampFormInput.type = "hidden";
-		lateJulyCampFormInput.value = balance.email;
+		lateJulyCampFormInput.value = balance.campers[0].campTwo;
 		balanceInfoForm.appendChild(lateJulyCampFormInput);
 		var middleSchoolCampFormInput = document.createElement('input');
 		middleSchoolCampFormInput.id = "middleSchoolCampFormInput" + "_" + i;
 		middleSchoolCampFormInput.name = "middleSchoolCamp";
 		middleSchoolCampFormInput.type = "hidden";
-		middleSchoolCampFormInput.value = balance.email;
+		// middle school will be in camp one field. If it does not match middle school string then it will not be selected,
+		// so we are good if camp one is not middle school and it's placed here.
+		middleSchoolCampFormInput.value = balance.campers[0].campOne;
 		balanceInfoForm.appendChild(middleSchoolCampFormInput);
 		// amount hidden field
 		var remainingBalanceFormInput = document.createElement('input');
