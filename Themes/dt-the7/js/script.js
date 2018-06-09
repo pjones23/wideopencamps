@@ -30,33 +30,24 @@ jQuery(document).ready(function($) {
 				//$( '.entry-content' ).text( object.responseJSON.body );
 				//console.log(object);
 				//console.log(object.responseJSON);
-				createTable(object.responseJSON);
+				var balances = object.responseJSON;
+				if(balances != null && balances.length > 0){
+					createTable(balances);
+				} else {
+					createLegacyPayButton();
+				}
 			}
 		});
-	});
-
-	// Listen for a click event on our text input submit button
-	$( '.payBtn' ).click( function( e ) {
-		console.log("clicked pay button");
-		// Stop the button from submitting and refreshing the page.
-		e.preventDefault();
 	});
 
 	$(document).on('click', '.payBtn', function(e) {
 
 			// Stop the button from submitting and refreshing the page.
 			e.preventDefault();
-
-			console.log("clicked pay button");
-	    // Do stuff with the formid
-			console.log(e);
 			var buttonID = $(e.target).attr('id');
-			console.log(buttonID);
 			var buttonIdSplit = buttonID.split("_");
 			var id = buttonIdSplit[1];
-			console.log(id);
 			var balanceInfoForm = document.getElementById("balanceInfo_" + id);
-			console.log(balanceInfoForm);
 			balanceInfoForm.submit();
 
 	    return false;
@@ -207,6 +198,41 @@ function createTable(balances){
 		searchResultsDiv.appendChild(balanceHiddenForms[k]);
 	}
 
+}
+
+function createLegacyPayButton(){
+	var payBalanceButtonForm = document.createElement('form');
+	payBalanceButtonForm.className = "form";
+	payBalanceButtonForm.id = "pay_balance_btn_form";
+	payBalanceButtonForm.method = "post";
+	payBalanceButtonForm.action = "/pay-my-balance"
+	var payBalanceButtonFormInput = document.createElement('input');
+	payBalanceButtonFormInput.id = "legacyPayBtn";
+	payBalanceButtonFormInput.className = "legacyPayBtn";
+	payBalanceButtonFormInput.type = "submit";
+	payBalanceButtonFormInput.value = "Pay Now";
+	payBalanceButtonForm.appendChild(payBalanceButtonFormInput);
+
+	var paragraph = document.createElement('p');
+	paragraph.style = "text-align: center;";
+	var text = document.createTextNode("Sorry, we were unable to locate your records.");
+	var linebreak = document.createElement('br');
+	var text2 = document.createTextNode("Please click below to complete your payment.");
+	paragraph.appendChild(text);
+	paragraph.appendChild(linebreak);
+	paragraph.appendChild(text2);
+	paragraph.appendChild(payBalanceButtonForm);
+
+
+	/*
+	<p style="text-align: center;">Please enter email address used at time of registration.
+	<input id="email" name="email" type="text" placeholder="email address" />
+	<input id="searchBtn" type="submit" value="Search" /></p>
+	*/
+
+	var searchResultsDiv = document.getElementById("searchResults");
+	searchResultsDiv.innerHTML = "";
+	searchResultsDiv.appendChild(paragraph);
 }
 
 });
